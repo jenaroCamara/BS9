@@ -1,5 +1,6 @@
 package com.example.jpadto.profesor.infraestructure.controller;
 
+import com.example.jpadto.exceptions.UnprocesableException;
 import com.example.jpadto.feign.IFeignServer;
 import com.example.jpadto.feign.dto.OutputDto;
 import com.example.jpadto.profesor.application.ProfesorInterface;
@@ -38,29 +39,13 @@ public class ProferorControlador {
 
     /*--------------------IFeign------------------------*/
 
-    @GetMapping("{code}")
-    ResponseEntity<OutputDto> callUsingFeign(@PathVariable int code)
-    {
-        System.out.println("En client. Antes de llamada a server Devolvere: "+code);
-        ResponseEntity<OutputDto> respuesta=iFeignServer.callServer(code);
-        System.out.println("En client. Despues de llamada a server");
-        return respuesta;
-    }
-    @GetMapping("1/{code}")
-    ResponseEntity<OutputDto> callUsingFeignPlusOne(@PathVariable int code)
-    {
-        System.out.println("En client. Antes de llamada a server Devolvere: "+code);
-        ResponseEntity<OutputDto> respuesta=iFeignServer.callServerMas1(code);
-        System.out.println("En client. Despues de llamada a server");
-        return respuesta;
-    }
-
     @GetMapping("/template/{code}")
-    ResponseEntity<OutputDto> callUsingRestTemplate(@PathVariable int code)
+    ResponseEntity<OutputDTOProfesor> callUsingRestTemplate(@PathVariable int code)
     {
-        System.out.println("En client Resttemplate. Antes de llamada a server Devolvere: "+code);
-        ResponseEntity<OutputDto> rs = new RestTemplate().getForEntity("http://localhost:8080/server/"+code,OutputDto.class);
-        System.out.println("En client Resttemplate. Despues de llamada a server");
+        ResponseEntity<OutputDTOProfesor> rs = new RestTemplate().getForEntity("http://localhost:8081/server/feign/getProfesor/"+code,OutputDTOProfesor.class);
+        if (rs.getStatusCode() != HttpStatus.OK){
+            throw new UnprocesableException("No existe");
+        }
         return ResponseEntity.ok(rs.getBody());
     }
 
