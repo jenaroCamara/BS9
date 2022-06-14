@@ -18,25 +18,6 @@ public class ServerController {
     @Autowired
     ProfesorInterface profesorInterface;
 
-    @GetMapping("{httpCode}")
-    ResponseEntity<OutputDto> getHttpCode(@PathVariable int httpCode)
-    {
-        System.out.println("En server. Devolvere: "+httpCode);
-        return ResponseEntity.status(httpCode).body(new OutputDto(httpCode,"return by server"));
-    }
-
-    /**
-     *
-     * @param httpCode
-     * @return Return code received plus one.
-     */
-    @GetMapping("1/{httpCode}")
-    ResponseEntity<OutputDto> getHttpCodePlusOne(@PathVariable int httpCode)
-    {
-        System.out.println("En server. Devolvere: "+httpCode);
-        return ResponseEntity.status(httpCode+1).body(new OutputDto(httpCode+1,"return by server"));
-    }
-
    @GetMapping("/feign/getProfesor/{id}")
     public ResponseEntity<OutputDTOProfesor> callUsingFeigngetProfesor(@PathVariable String id) throws Exception{
         return ResponseEntity.ok(profesorInterface.getProfesor(id));
